@@ -1,12 +1,33 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Row, Col, Image, ListGroup, Card, Button } from 'react-bootstrap'
 import Rating from '../components/Rating'
-import products from '../products'
+import axios from 'axios'
 
 const ProductScreen = ({ match }) => {
-  const product = products.find((p) => p._id === match.params.id)
-  console.log(product)
+  // configure component state with the useState hook
+  // state contains the product object
+  // setProduct is setter for this object
+  const [product, setProduct] = useState({})
+
+  useEffect(() => {
+    // configure the fetchProduct method that calls the API
+    // and fetches the products with a GET request
+    const fetchProduct = async () => {
+      // use axios to make the GET request
+      // match.params is passed via the related react-router route
+      // with { data } we destructure the axios response's 'data'
+      const { data } = await axios.get(`/api/products/${match.params.id}`)
+
+      // call the setter to set the response data to the state
+      setProduct(data)
+    }
+
+    // call the method
+    fetchProduct()
+
+    // match has to be added to the dependencies as suggested by the React linter
+  }, [match])
 
   return (
     <>
